@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    
+    <select id="chemical1">
+        <% list.forEach((chemical) => { %>
+            <option value="<%= chemical[0] %>" ><%= chemical[0] %></option>
+        <% }) %>
+    </select>
+    <select id="chemical2">
+        <% list.forEach((chemical) => { %>
+            <option value="<%= chemical[0] %>"><%= chemical[0] %></option>
+        <% }) %>
+    </select>
+    <button onclick="socket.emit('mix', [document.getElementById('chemical1').value, document.getElementById('chemical2').value])">Mix</button>
+
+    <h1 id="result">RESULT</h1>
+</body>
+<script>
+    const socket = io('http://localhost:3000');
+
+    socket.on('result', (data) => {
+        document.getElementById('result').innerText = data;
+    });
+</script>
+</html>
