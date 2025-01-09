@@ -60,6 +60,10 @@ app.get('/', (req, res) => {
     res.render('home', {req, list})
 })
 
+app.get('/tube', (req, res) => {
+    res.render('tube')
+})
+
 app.get('/output', (req, res) => {
     res.render('output')
 })

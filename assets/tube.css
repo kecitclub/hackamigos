@@ -1,0 +1,30 @@
+body{
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+img{
+    width: 68px;
+    height: 200px;
+    overflow: auto;
+}
+.C1{
+    display: flex;
+    justify-content: left;
+    border: #000;
+    padding: 10px;
+
+}
+.tube{
+    border: 2px solid #000;
+    border-radius: 0px 0px 70px 70px;
+    width: 30px;
+    height: 100px;
+}
+.tubetop{
+    border: 2px solid #000;
+    border-radius: 50px;
+    width: 35px;
+    height: 4px;
+    margin-left: -36.5px;
+    margin-top: -6px;
+}
