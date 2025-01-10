@@ -1,4 +1,9 @@
 require('dotenv').config();
+
+const { SerialPort } = require('serialport');
+const port = new SerialPort({ path: 'COM10', baudRate: 9600 });
+port.on('open', () => {console.log('Arduino Board Connected')});
+
 const axios = require('axios');
 const API_KEY = process.env.OPENAI_API_KEY;
 const API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
@@ -26,6 +31,11 @@ module.exports = {
         } catch (error) {
             return error.response
         }
+    },
+
+    converToHex: async (color) => {
+        let d = await module.exports.openAI(`give me a straight answer one word hex color e.g #FFF or #000 of ${color}`)
+        return d;
     },
 
     mix: {
@@ -104,5 +114,14 @@ module.exports = {
             }
         }
         return false;
+    },
+
+    ledControl: (led, color) => {
+
+        port.write(`LED:${String(led)}:${color}`, (err) => {
+            if (err) {
+                console.error("Error writing to serial port:", err);
+            }
+        });
     }
 }

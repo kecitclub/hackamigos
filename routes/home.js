@@ -18,14 +18,17 @@ io.on('connection', (socket) => {
         let product = await functions.mix.getProduct(data[0], data[1]);
 
         io.emit('result', [reaction, color, product]);
+        functions.ledControl(3, await functions.converToHex(color))
     })
 
-    socket.on('change_color1', data => {
+    socket.on('change_color1', async (data) => {
         socket.emit('act_change_color1', functions.getColor(data))
+        functions.ledControl(1, await functions.converToHex(functions.getColor(data)))
     })
 
-    socket.on('change_color2', data => {
+    socket.on('change_color2', async (data) => {
         socket.emit('act_change_color2', functions.getColor(data))
+        functions.ledControl(2, await functions.converToHex(functions.getColor(data)))
     })
 })
 
