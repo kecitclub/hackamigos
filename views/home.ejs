@@ -204,15 +204,15 @@
 </body>
 <script>
     const socket = io('http://localhost:3000');
-    // const tubes = document.getElementById('mixture_tube').style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 45.5%, #140404 100%)'
 
     socket.on('result', (data) => {
+        
         let chemicalReaction = data[0]
         let color = data[1]
         let product = data[2]
         
-        const utterance = new SpeechSynthesisUtterance(chemicalReaction);
-        speechSynthesis.speak(utterance);
+        // const utterance = new SpeechSynthesisUtterance(chemicalReaction);
+        // speechSynthesis.speak(utterance);
         
         document.getElementById('reaction').innerText = 'Reaction: ' + chemicalReaction;
         document.getElementById('mixture_tube').style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 45.5%, ' + color + ' 100%)'

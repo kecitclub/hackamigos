@@ -1,23 +1,26 @@
-// const express = require('express');
-// const app = express.Router();
+const express = require('express');
+const app = express.Router();
 
-// const { SerialPort } = require('serialport');
-// const port = new SerialPort({ path: 'COM6', baudRate: 9600 });
-// port.on('open', () => {console.log('Arduino Board Connected')});
+const { SerialPort } = require('serialport');
+const port = new SerialPort({ path: 'COM10', baudRate: 9600 });
+port.on('open', () => {console.log('Arduino Board Connected')});
 
-// app.post('/', (req, res) => {
-    
-//   const pin = req.body.pin; 
-//   const status = req.body.status ? "ON" : "OFF";
+app.get('/', (req, res) => {
+    res.render('arduino')
+})
 
-//   const command = `PIN:${pin}:${status}\n`;
-//   port.write(command, (err) => {
-//     if (err) {
-//       console.error("Error writing to serial port:", err);
-//       return res.status(500).send("Error sending command.");
-//     }
-//     res.status(200).send("Command sent.");
-//   });
-// });
+app.post('/', (req, res) => {
+        
+    const c = `LED:1:${req.body.commands}`;    
+    console.log(c)        
+    port.write(c, (err) => {
+    if (err) {
+        console.error("Error writing to serial port:", err);
+        return res.status(500).send("Error sending command.");
+    }
+    res.redirect('/arduino');
+    });
+});
 
-// module.exports = {app};
+
+module.exports = {app};
