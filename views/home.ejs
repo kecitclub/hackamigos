@@ -3,30 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Fullscreen UI</title>
     <script src="/socket.io/socket.io.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8f1fc;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: #FFF;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            height: 90%;
+            max-width: 1200px;
+            overflow: hidden;
+        }
+
+        .output-boxes {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+            margin-right: 20px;
+        }
+
+        .output-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            height: 300px;
+            width: 400px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-tubes {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .test-tube {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tube{
+            border-left: 2px solid #000;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            border-radius: 0px 0px 70px 70px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 45.5%, #c7e0fd 100%);
+            width: 50px;
+            height: 200px;
+        }
+        .tubetop{
+            border: 2px solid #000;
+            border-radius: 50px;
+            width: 55px;
+            height: 6px;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        button, select {
+            width: 180px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #3273dc;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+
+        button:hover, select:hover {
+            background: #275b9c;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .output-boxes {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+
+            .test-tubes {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .tube {
+                width: 40px;
+                height: 120px;
+            }
+
+            .label {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            button, select {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .output-box {
+                font-size: 1rem;
+            }
+
+            .tube {
+                width: 30px;
+                height: 100px;
+            }
+
+            .label {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
 </head>
 <body>
     
-    <select id="chemical1">
-        <% list.forEach((chemical) => { %>
-            <option value="<%= chemical[0] %>" ><%= chemical[0] %></option>
-        <% }) %>
-    </select>
-    <select id="chemical2">
-        <% list.forEach((chemical) => { %>
-            <option value="<%= chemical[0] %>"><%= chemical[0] %></option>
-        <% }) %>
-    </select>
-    <button onclick="socket.emit('mix', [document.getElementById('chemical1').value, document.getElementById('chemical2').value])">Mix</button>
+    <div class="container">
 
-    <h1 id="result">RESULT</h1>
+        <div class="output-boxes">
+            <div class="output-box"><p id="product">Product: </p></div>
+            <div class="output-box"><p id="reaction">Reaction: </p></div>
+        </div>
+
+        <div class="test-tubes">
+
+            <div class="test-tube">
+              <div class="tubetop"></div>
+                <div id="chemical1_tube" class="tube"></div> <br>
+                <select id="chemical1">
+                    <option selected>Random Chemical</option>
+                    <% list.forEach((chemical) => { %>
+                        <option value="<%= chemical[0] %>" ><%= chemical[0] %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="test-tube">
+              <div class="tubetop"></div>
+                <div id="chemical2_tube" class="tube"></div> <br>
+                <select id="chemical2">
+                    <option selected>Random Chemical</option>
+                    <% list.forEach((chemical) => { %>
+                        <option value="<%= chemical[0] %>" ><%= chemical[0] %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="test-tube">
+              <div class="tubetop"></div>
+                <div id="mixture_tube" class="tube"></div> <br>
+                <button id="mixbutton" onclick="
+                    socket.emit('mix', [document.getElementById('chemical1').value, document.getElementById('chemical2').value])
+                ">Mix</button>
+            </div>
+
+        </div>
+        
+    </div>
 </body>
 <script>
     const socket = io('http://localhost:3000');
+    // const tubes = document.getElementById('mixture_tube').style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 45.5%, #140404 100%)'
 
     socket.on('result', (data) => {
-        document.getElementById('result').innerText = data;
+        let chemicalReaction = data[0]
+        let color = data[1]
+        let product = data[2]
+        
+        const utterance = new SpeechSynthesisUtterance(chemicalReaction);
+        speechSynthesis.speak(utterance);
+        
+        document.getElementById('reaction').innerText = 'Reaction: ' + chemicalReaction;
+        document.getElementById('mixture_tube').style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 45.5%, ' + color + ' 100%)'
+        document.getElementById('product').innerText = 'Product: ' + product;
+
     });
+
+    document.getElementById('chemical1').addEventListener('change', (event) => {
+        socket.emit('change_color1', event.target.value)
+    });
+    socket.on('act_change_color1', data => {
+        document.getElementById('chemical1_tube').style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 45.5%, ' + data + ' 100%)'
+    })
+
+    document.getElementById('chemical2').addEventListener('change', (event) => {
+        socket.emit('change_color2', event.target.value)
+    });
+    socket.on('act_change_color2', data => {
+        document.getElementById('chemical2_tube').style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 0.00) 45.5%, ' + data + ' 100%)'
+    })
+
 </script>
 </html>
