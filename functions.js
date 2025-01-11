@@ -123,5 +123,14 @@ module.exports = {
                 console.error("Error writing to serial port:", err);
             }
         });
-    }
+    },
+
+    lcdControl: (led, text) => {
+
+        port.write(`LCD:${String(led)}:${text}`, (err) => {
+            if (err) {
+                console.error("Error writing to serial port:", err);
+            }
+        });
+    },
 }

@@ -19,16 +19,19 @@ io.on('connection', (socket) => {
 
         io.emit('result', [reaction, color, product]);
         functions.ledControl(3, await functions.converToHex(color))
+        // functions.lcdControl(3, text)
     })
 
     socket.on('change_color1', async (data) => {
         socket.emit('act_change_color1', functions.getColor(data))
         functions.ledControl(1, await functions.converToHex(functions.getColor(data)))
+        // functions.lcdControl(1, text)
     })
 
     socket.on('change_color2', async (data) => {
         socket.emit('act_change_color2', functions.getColor(data))
         functions.ledControl(2, await functions.converToHex(functions.getColor(data)))
+        // functions.lcdControl(2, text)
     })
 })
 
